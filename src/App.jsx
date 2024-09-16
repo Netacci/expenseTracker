@@ -150,6 +150,15 @@ const App = () => {
             </Suspense>
           }
         />
+
+        <Route
+          path='*'
+          element={
+            <Suspense fallback={<Loader />}>
+              <Error />
+            </Suspense>
+          }
+        />
       </Routes>
     </AuthProvider>
   );

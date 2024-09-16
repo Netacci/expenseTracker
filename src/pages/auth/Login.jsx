@@ -37,11 +37,18 @@ const Login = () => {
     };
     try {
       await dispatch(login(submitData)).unwrap();
-      await dispatch(checkAuth()).unwrap();
       showToastMessage('Login Successful');
       navigate(ROUTES.dashboard);
+      // const res = await dispatch(checkAuth()).unwrap();
+      // if (res.status === 200) {
+      //   showToastMessage('Login Successful');
+      //   navigate(ROUTES.dashboard);
+      // }
     } catch (err) {
-      showErrorMessage(err?.response?.data?.message || 'Login Failed');
+      console.log(err);
+      showErrorMessage(
+        err?.response?.data?.message || err?.response?.data || 'Login Failed'
+      );
     } finally {
       setLoading(false);
     }

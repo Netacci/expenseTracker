@@ -17,8 +17,11 @@ const Error = ({ error = 'An unexpected error occurred.' }) => {
             We apologize for the inconvenience. Please try again later or return
             to the home page.
           </p>
-          <Button className='mt-4' onClick={() => (window.location.href = '/')}>
-            <Home className='mr-2 h-4 w-4 text-green-600' />
+          <Button
+            className='mt-4 bg-green-600'
+            onClick={() => (window.location.href = '/login')}
+          >
+            <Home className='mr-2 h-4 w-4 text-white' />
             Return to Home
           </Button>
         </div>

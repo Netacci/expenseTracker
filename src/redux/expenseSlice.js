@@ -128,6 +128,7 @@ export const deleteExpense = createAsyncThunk(
 export const fetchRecentExpenses = createAsyncThunk(
   'expense/get-recent-expenses',
   async (id, thunkAPI) => {
+    console.log(id);
     try {
       const response = await userRequest.get(`budgets/${id}/recent-expenses`);
       return response.data.data;
