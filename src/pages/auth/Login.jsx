@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, DollarSign } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, DollarSign, Loader2 } from 'lucide-react';
 import { ROUTES } from '../../utils/routes';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -131,7 +131,11 @@ const Login = () => {
                   type='submit'
                   className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                 >
-                  {loading ? <span>Loading...</span> : 'Login'}
+                  {loading ? (
+                    <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                  ) : (
+                    'Login'
+                  )}
                 </button>
               </div>
             </form>
