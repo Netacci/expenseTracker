@@ -4,6 +4,7 @@ import { ROUTES } from './utils/routes.js';
 import PrivateRoute from './components/privateRoute/PrivateRoute.jsx';
 
 const App = () => {
+  const Home = lazy(() => import('./pages/home/Home.jsx'));
   const Signup = lazy(() => import('./pages/auth/Signup.jsx'));
   const Login = lazy(() => import('./pages/auth/Login.jsx'));
   const Dashboard = lazy(() => import('./pages/dashboard/Dashboard.jsx'));
@@ -26,6 +27,14 @@ const App = () => {
           element={
             <Suspense>
               <Signup />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTES.home}
+          element={
+            <Suspense>
+              <Home />
             </Suspense>
           }
         />

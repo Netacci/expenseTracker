@@ -121,7 +121,7 @@ const Budgets = () => {
           </p>
           <Link
             to={`/budget/${budget.id}`}
-            className='text-blue-500 hover:underline mt-2 inline-block'
+            className='text-green-500 hover:underline mt-2 inline-block'
           >
             View Details
           </Link>

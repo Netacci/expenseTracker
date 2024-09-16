@@ -154,19 +154,19 @@ const BudgetTracker = () => {
             <TabsList className='grid w-full grid-cols-3 mb-6 bg-white p-1 rounded-full shadow-sm'>
               <TabsTrigger
                 value='summary'
-                className='py-2 px-4 rounded-full text-gray-600 hover:bg-gray-100 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 transition-all duration-200 ease-in-out font-medium'
+                className='py-2 px-4 rounded-full text-gray-600 hover:bg-gray-100 data-[state=active]:bg-green-100 data-[state=active]:text-green-700 transition-all duration-200 ease-in-out font-medium'
               >
                 Budget Summary
               </TabsTrigger>
               <TabsTrigger
                 value='expenses'
-                className='py-2 px-4 rounded-full text-gray-600 hover:bg-gray-100 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 transition-all duration-200 ease-in-out font-medium'
+                className='py-2 px-4 rounded-full text-gray-600 hover:bg-gray-100 data-[state=active]:bg-green-100 data-[state=active]:text-green-700 transition-all duration-200 ease-in-out font-medium'
               >
                 Expenses
               </TabsTrigger>
               <TabsTrigger
                 value='income'
-                className='py-2 px-4 rounded-full text-gray-600 hover:bg-gray-100 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 transition-all duration-200 ease-in-out font-medium'
+                className='py-2 px-4 rounded-full text-gray-600 hover:bg-gray-100 data-[state=active]:bg-green-100 data-[state=active]:text-green-700 transition-all duration-200 ease-in-out font-medium'
               >
                 Income
               </TabsTrigger>

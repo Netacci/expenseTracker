@@ -9,6 +9,7 @@ import {
   Menu,
   Home,
   PieChart,
+  DollarSign,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '../../utils/routes';
@@ -20,7 +21,7 @@ const DesktopNavLink = ({ to, children }) => (
     className={({ isActive }) =>
       `inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200 ${
         isActive
-          ? 'border-blue-500 text-blue-600'
+          ? 'border-green-500 text-green-600'
           : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
       }`
     }
@@ -33,7 +34,7 @@ const MobileNavLink = ({ to, icon: Icon, label }) => (
     to={to}
     className={({ isActive }) =>
       `flex flex-col items-center transition-colors duration-200 ${
-        isActive ? 'text-blue-600' : 'text-gray-500'
+        isActive ? 'text-green-600' : 'text-gray-500'
       }`
     }
   >
@@ -56,7 +57,7 @@ const Navbar = () => {
     navigate(ROUTES.login);
     window.location.reload();
   };
-  // TODO lets make the nav hightlight on the page we are
+
   return (
     <div>
       <nav className='bg-white shadow-md'>
@@ -64,9 +65,15 @@ const Navbar = () => {
           <div className='flex justify-between items-center h-16'>
             <div className='flex '>
               <Link to='/' className='flex-shrink-0 flex items-center'>
-                <span className='text-xl font-bold text-blue-600'>
+                {/* <span className='text-xl text-green-600 font-bold text-blue-600'>
                   ExpenseTracker
-                </span>
+                </span> */}
+                <div className='flex items-center'>
+                  <DollarSign className='h-8 w-8 text-green-600' />
+                  <span className='text-xl font-bold text-gray-800 text-green-600 ml-2'>
+                    ExpenseTracker
+                  </span>
+                </div>
               </Link>
               <div className='hidden sm:ml-6 sm:flex sm:space-x-8'>
                 <DesktopNavLink to='/dashboard'>Dashboard</DesktopNavLink>
@@ -74,7 +81,7 @@ const Navbar = () => {
 
                 <Button
                   onClick={() => setIsAddBudgetOpen(true)}
-                  className='ml-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md flex items-center'
+                  className='ml-4 text-sm font-medium text-white bg-green-600 hover:bg-green-600 px-3 py-2 rounded-md flex items-center'
                 >
                   <PlusCircle className='mr-2 h-5 w-5' />
                   Create Budget
