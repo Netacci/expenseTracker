@@ -65,7 +65,7 @@ const Signup = () => {
   return (
     <>
       <Toaster />
-      <div className='min-h-screen  bg-gray-100 flex items-center justify-center p-4'>
+      <div className='min-h-screen  bg-gray-100 flex items-center justify-center sm:p-4'>
         <div className='bg-white rounded-lg shadow-lg w-full max-w-4xl flex overflow-hidden'>
           {/* Left side - Image or Branding */}
           <div className='hidden md:block w-1/2 bg-green-600 p-12 text-white'>
@@ -81,7 +81,7 @@ const Signup = () => {
           </div>
 
           {/* Right side - Auth Form */}
-          <div className='w-full md:w-1/2 p-8'>
+          <div className='w-full md:w-1/2 p-4 sm:p-8'>
             <h2 className='text-3xl font-semibold text-center mb-6'>
               Create an Account
             </h2>
