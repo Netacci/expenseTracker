@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ROUTES } from './utils/routes.js';
 import PrivateRoute from './components/privateRoute/PrivateRoute.jsx';
+import Loader from './components/loader/Loader.jsx';
 
 const App = () => {
   const Home = lazy(() => import('./pages/home/Home.jsx'));
@@ -25,7 +26,7 @@ const App = () => {
         <Route
           path={ROUTES.signup}
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <Signup />
             </Suspense>
           }
@@ -33,7 +34,7 @@ const App = () => {
         <Route
           path={ROUTES.home}
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <Home />
             </Suspense>
           }
@@ -41,7 +42,7 @@ const App = () => {
         <Route
           path={ROUTES.registerSuccess}
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <RegisterSuccess />
             </Suspense>
           }
@@ -49,7 +50,7 @@ const App = () => {
         <Route
           path={ROUTES.login}
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <Login />
             </Suspense>
           }
@@ -57,7 +58,7 @@ const App = () => {
         <Route
           path={ROUTES.callback}
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <GoogleCallback />
             </Suspense>
           }
@@ -65,7 +66,7 @@ const App = () => {
         <Route
           path={ROUTES.confirmEmail}
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <VerifyEmail />
             </Suspense>
           }
@@ -73,7 +74,7 @@ const App = () => {
         <Route
           path={ROUTES.dashboard}
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <PrivateRoute>
                 <Dashboard />
               </PrivateRoute>
@@ -83,7 +84,7 @@ const App = () => {
         <Route
           path={ROUTES.budgets}
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <PrivateRoute>
                 <Budgets />
               </PrivateRoute>
@@ -93,7 +94,7 @@ const App = () => {
         <Route
           path='/budget/:id'
           element={
-            <Suspense>
+            <Suspense fallback={<Loader />}>
               <PrivateRoute>
                 <BudgetDetail />
               </PrivateRoute>
