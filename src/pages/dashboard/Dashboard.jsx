@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllBudgets } from '../../redux/budgetSlice';
 
 import RecentBudgets from './components/RecentBudgets';
+import { Loader2 } from 'lucide-react';
 
 const Dashboard = () => {
   const [totalIncome, setTotalIncome] = useState(0);
@@ -35,21 +36,27 @@ const Dashboard = () => {
 
   return (
     <Layout dashboard>
-      <div className='space-y-6'>
-        {/* <TotalAmounts
+      {!budgets ? (
+        <div className='w-full h-full flex justify-center items-center'>
+          <Loader2 className='w-10 h-10 animate-spin' />
+        </div>
+      ) : (
+        <div className='space-y-6'>
+          {/* <TotalAmounts
           totalExpenses={totalExpenses}
           totalIncome={totalIncome}
           balance={balance}
         /> */}
-        <Charts
-          totalExpenses={totalExpenses}
-          totalIncome={totalIncome}
-          budgets={budgets}
-        />
-        {/* <BudgetSummary budgets={budgets} /> */}
+          <Charts
+            totalExpenses={totalExpenses}
+            totalIncome={totalIncome}
+            budgets={budgets}
+          />
+          {/* <BudgetSummary budgets={budgets} /> */}
 
-        <RecentBudgets budgets={budgets} />
-      </div>
+          <RecentBudgets budgets={budgets} />
+        </div>
+      )}
     </Layout>
   );
 };
