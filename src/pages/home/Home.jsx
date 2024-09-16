@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from 'react';
-import { motion, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   DollarSign,
   PieChart,
@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { ROUTES } from '../../utils/routes';
 import { Link } from 'react-router-dom';
+import UserPhoto from '../../assets/user.jpg';
+import Dashboardbg from '../../assets/bd.png';
 
 const FeatureCard = ({ icon: Icon, title, description }) => (
   <motion.div
@@ -214,7 +216,7 @@ const Home = () => {
               transition={{ duration: 0.5 }}
             >
               <img
-                src='/src/assets/bd.png'
+                src={Dashboardbg}
                 alt='ExpenseTracker Dashboard'
                 className='rounded-lg shadow-2xl'
               />
@@ -284,7 +286,7 @@ const Home = () => {
                 </p>
                 <div className='flex items-center'>
                   <img
-                    src='/src/assets/user.jpg'
+                    src={UserPhoto}
                     alt='Photo by Venrick Azcueta Unsplash'
                     className='rounded-full mr-4 w-11 h-12'
                   />
