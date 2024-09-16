@@ -16,7 +16,7 @@ const PasswordValidator = ({ password, setIsPasswordValid }) => {
       lowercase: /[a-z]/.test(password),
       uppercase: /[A-Z]/.test(password),
       digit: /\d/.test(password),
-      symbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      symbol: /[!@#$%^&*(),.?"]/.test(password),
       length: password.length >= 8,
     });
   }, [password]);
@@ -60,7 +60,10 @@ const PasswordValidator = ({ password, setIsPasswordValid }) => {
           text='Uppercase letter'
         />
         <ValidationItem isValid={validations.digit} text='Number' />
-        <ValidationItem isValid={validations.symbol} text='Symbol' />
+        <ValidationItem
+          isValid={validations.symbol}
+          text='Symbol(!@#$%^&*(),.?")'
+        />
         <ValidationItem
           isValid={validations.length}
           text='At least 8 characters'
