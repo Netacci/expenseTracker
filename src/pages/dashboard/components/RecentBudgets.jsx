@@ -26,7 +26,7 @@ const RecentBudgets = ({ budgets }) => {
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       .slice(0, 5);
   return (
-    <Card>
+    <Card className='pb-6'>
       <CardHeader>
         <div className='flex justify-between items-center'>
           <h2 className='text-xl font-bold'>Recent Budgets</h2>
