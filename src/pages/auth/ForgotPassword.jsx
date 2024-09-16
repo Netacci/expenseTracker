@@ -10,7 +10,8 @@ import {
   showToastMessage,
 } from '../../components/toast/Toast';
 import { Toaster } from 'react-hot-toast';
-
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 const ForgotPassword = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -63,34 +64,28 @@ const ForgotPassword = () => {
               className='space-y-4'
             >
               <div>
-                <label
-                  htmlFor='email'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  Email Address
-                </label>
                 <div className='mt-1 relative rounded-md shadow-sm'>
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                     <Mail className='h-5 w-5 text-gray-400' />
                   </div>
-                  <input
+                  <Input
                     type='email'
                     name='email'
                     id='email'
-                    className='focus:ring-green-500 focus:border-green-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2'
+                    className='w-full pl-10 sm:text-sm border-gray-300 rounded-md'
                     placeholder='you@example.com'
                     required
                     {...register('email')}
                   />
                 </div>
               </div>
-              <button
+              <Button
                 type='submit'
-                disabled={loading}
+                disabled={loading || email === ''}
                 className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
               >
                 {loading ? 'Sending...' : ' Send Reset Link'}
-              </button>
+              </Button>
             </form>
           ) : (
             <div className='text-center'>

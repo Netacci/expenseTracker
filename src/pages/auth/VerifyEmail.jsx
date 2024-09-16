@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { CheckCircle, XCircle, Loader } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROUTES } from '../../utils/routes';
 import { useDispatch } from 'react-redux';
@@ -26,7 +26,7 @@ const VerifyEmail = () => {
       .catch(() => {
         setVerificationStatus('error');
       });
-  }, [dispatch]);
+  }, [dispatch, token]);
   const handleVerificationResend = () => {
     setLoading(true);
     dispatch(resendVerificationEmail(email))
@@ -50,7 +50,7 @@ const VerifyEmail = () => {
         <div className='bg-white rounded-lg shadow-lg w-full max-w-md p-8 text-center'>
           {verificationStatus === 'pending' && (
             <>
-              <Loader className='h-16 w-16 text-green-600 mx-auto mb-4 animate-spin' />
+              <Loader2 className='h-16 w-16 text-green-600 mx-auto mb-4 animate-spin' />
               <h2 className='text-3xl font-semibold mb-4'>
                 Verifying Your Email
               </h2>

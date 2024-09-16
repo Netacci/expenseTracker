@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckCircle, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/routes';

@@ -10,6 +10,8 @@ import {
   showToastMessage,
 } from '../../components/toast/Toast';
 import { Toaster } from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -74,42 +76,30 @@ const Login = () => {
             </h2>
             <form className='space-y-4' onSubmit={handleSubmit(handleLogin)}>
               <div>
-                <label
-                  htmlFor='email'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  Email Address
-                </label>
                 <div className='mt-1 relative rounded-md shadow-sm'>
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                     <Mail className='h-5 w-5 text-gray-400' />
                   </div>
-                  <input
+                  <Input
                     type='email'
                     name='email'
                     id='email'
-                    className='focus:ring-green-500 focus:border-green-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-1'
+                    className='w-full pl-10 sm:text-sm border-gray-300 rounded-md'
                     placeholder='you@example.com'
                     {...register('email')}
                   />
                 </div>
               </div>
               <div>
-                <label
-                  htmlFor='password'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  Password
-                </label>
-                <div className='mt-1 relative rounded-md shadow-sm'>
+                <div className='mt-1 relative rounded-md '>
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                     <Lock className='h-5 w-5 text-gray-400' />
                   </div>
-                  <input
+                  <Input
                     type={showPassword ? 'text' : 'password'}
                     name='password'
                     id='password'
-                    className='focus:ring-green-500 focus:border-green-500 block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md py-1'
+                    className=' w-full pl-10 pr-10 sm:text-sm rounded-md'
                     placeholder='••••••••'
                     {...register('password')}
                   />
@@ -129,7 +119,7 @@ const Login = () => {
                 </div>
               </div>
               <div>
-                <button
+                <Button
                   disabled={email && password ? false : true}
                   type='submit'
                   className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
@@ -139,7 +129,7 @@ const Login = () => {
                   ) : (
                     'Login'
                   )}
-                </button>
+                </Button>
               </div>
             </form>
             <div className='mt-6'>
@@ -154,7 +144,7 @@ const Login = () => {
                 </div>
               </div>
               <div className='mt-6'>
-                <button
+                <Button
                   onClick={handleGoogleAuth}
                   type='button'
                   className='w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50'
@@ -183,7 +173,7 @@ const Login = () => {
                     />
                   </svg>
                   Sign in with Google
-                </button>
+                </Button>
               </div>
             </div>
             <div className='mt-6 text-center text-sm'>

@@ -17,7 +17,10 @@ import {
   showErrorMessage,
   showToastMessage,
 } from '../../components/toast/Toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Toaster } from 'react-hot-toast';
+import PasswordValidator from './components/PasswordValidator';
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +28,7 @@ const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const { handleSubmit, register, watch } = useForm({
     defaultValues: {
       firstName: '',
@@ -84,64 +87,49 @@ const Signup = () => {
             </h2>
             <form className='space-y-4' onSubmit={handleSubmit(handleRegister)}>
               <div>
-                <label
-                  htmlFor='name'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  Full Name
-                </label>
                 <div className='mt-1 relative rounded-md shadow-sm'>
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                     <User className='h-5 w-5 text-gray-400' />
                   </div>
-                  <input
+                  <Input
                     type='text'
                     name='name'
                     id='name'
-                    className='focus:ring-green-500 focus:border-green-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-1'
-                    placeholder='John Doe'
+                    className='w-full pl-10 sm:text-sm border-gray-300 rounded-md'
+                    placeholder='John'
                     {...register('firstName', { required: true })}
                   />
                 </div>
               </div>
 
               <div>
-                <label
-                  htmlFor='email'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  Email Address
-                </label>
                 <div className='mt-1 relative rounded-md shadow-sm'>
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                     <Mail className='h-5 w-5 text-gray-400' />
                   </div>
-                  <input
+                  <Input
                     type='email'
                     name='email'
                     id='email'
-                    className='focus:ring-green-500 focus:border-green-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-1'
+                    className='w-full pl-10 sm:text-sm border-gray-300 rounded-md'
                     placeholder='you@example.com'
-                    {...register('email', { required: true })}
+                    {...register('email', {
+                      required: true,
+                      pattern: /^\S+@\S+$/i,
+                    })}
                   />
                 </div>
               </div>
               <div>
-                <label
-                  htmlFor='password'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  Password
-                </label>
                 <div className='mt-1 relative rounded-md shadow-sm'>
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                     <Lock className='h-5 w-5 text-gray-400' />
                   </div>
-                  <input
+                  <Input
                     type={showPassword ? 'text' : 'password'}
                     name='password'
                     id='password'
-                    className='focus:ring-green-500 focus:border-green-500 block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md py-1'
+                    className=' w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md '
                     placeholder='••••••••'
                     {...register('password', { required: true })}
                   />
@@ -159,10 +147,14 @@ const Signup = () => {
                     </button>
                   </div>
                 </div>
+                <PasswordValidator
+                  password={password}
+                  setIsPasswordValid={setIsPasswordValid}
+                />
               </div>
               <div>
-                <button
-                  disabled={name && email && password ? false : true}
+                <Button
+                  disabled={name && email && isPasswordValid ? false : true}
                   type='submit'
                   className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                 >
@@ -171,7 +163,7 @@ const Signup = () => {
                   ) : (
                     'Sign Up'
                   )}
-                </button>
+                </Button>
               </div>
             </form>
             <div className='mt-6'>
@@ -186,7 +178,7 @@ const Signup = () => {
                 </div>
               </div>
               <div className='mt-6'>
-                <button
+                <Button
                   onClick={handleGoogleAuth}
                   type='button'
                   className='w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50'
@@ -215,7 +207,7 @@ const Signup = () => {
                     />
                   </svg>
                   Sign up with Google
-                </button>
+                </Button>
               </div>
             </div>
             <div className='mt-6 text-center text-sm'>
