@@ -18,9 +18,7 @@ const BudgetSummary = ({
             <span>Total Budget</span>
             <span>
               {' '}
-              <Tooltipp
-                text={'This is the total of all added expense category'}
-              />
+              <Tooltipp text={'This is the total of all expense category'} />
             </span>
           </CardHeader>
           <CardContent>
@@ -39,7 +37,7 @@ const BudgetSummary = ({
             <span>Total Income</span>
             <span>
               {' '}
-              <Tooltipp text={'This is the total of all added incomes'} />
+              <Tooltipp text={'This is the total of all incomes'} />
             </span>
           </CardHeader>
           <CardContent>

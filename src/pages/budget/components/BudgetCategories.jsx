@@ -53,6 +53,7 @@ const BudgetCategories = ({ currency }) => {
       setShowDeleteConfirm(false);
     }
   };
+
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
@@ -170,6 +171,7 @@ const BudgetCategories = ({ currency }) => {
           })}
         </div>
       )}
+
       <AddExpense
         selectedCategoryExpense={selectedCategoryExpense}
         setSelectedCategoryExpense={setSelectedCategoryExpense}

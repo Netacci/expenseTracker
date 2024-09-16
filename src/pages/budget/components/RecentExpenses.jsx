@@ -10,8 +10,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Empty from '../../../components/empty/Empty';
+import { currencySymbol } from '../../../utils/helper';
 
-const RecentExpenses = ({ expenses, categories }) => {
+const RecentExpenses = ({ expenses, currency }) => {
   return (
     <div className='mb-6'>
       <div className='flex justify-between items-center'>
@@ -47,11 +48,13 @@ const RecentExpenses = ({ expenses, categories }) => {
                     {format(new Date(expense.date), 'MMM d, yyyy')}
                   </TableCell>
                   <TableCell className='py-2'>{expense.name}</TableCell>
-                  <TableCell className='py-2'>
-                    {categories?.find((c) => c.id === expense.categoryId)?.name}
-                  </TableCell>
+                  <TableCell className='py-2'>{expense.categoryName}</TableCell>
                   <TableCell className='py-2 text-right'>
-                    ${expense.amount}
+                    {currencySymbol(currency)}{' '}
+                    {Intl.NumberFormat('en-US', {
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    }).format(expense.amount || 0)}
                   </TableCell>
                 </TableRow>
               ))}

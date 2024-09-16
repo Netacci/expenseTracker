@@ -25,7 +25,10 @@ import BudgetIncome from './components/BudgetIncome';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { fetchAllIncomes } from '../../redux/incomeSlice';
-import { fetchAllCategories } from '../../redux/expenseSlice';
+import {
+  fetchAllCategories,
+  fetchRecentExpenses,
+} from '../../redux/expenseSlice';
 
 const BudgetTracker = () => {
   const dispatch = useDispatch();
@@ -42,9 +45,10 @@ const BudgetTracker = () => {
 
   useEffect(() => {
     dispatch(fetchAllIncomes(id));
+    dispatch(fetchRecentExpenses(id));
   }, [dispatch, id]);
 
-  const { expenses } = useSelector((state) => state.expense);
+  const { recentExpenses } = useSelector((state) => state.expense);
 
   useEffect(() => {
     dispatch(fetchSingleBudget(id));
@@ -88,14 +92,14 @@ const BudgetTracker = () => {
   const totalBudget = budget?.total_budget || 0;
   const balance = budget?.balance || totalIncome - totalExpenses || 0;
 
-  const getRecentExpenses = () => {
-    return (
-      expenses &&
-      [...expenses]
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 5)
-    );
-  };
+  // const getRecentExpenses = () => {
+  //   return (
+  //     expenses &&
+  //     [...expenses]
+  //       .sort((a, b) => new Date(b.date) - new Date(a.date))
+  //       .slice(0, 5)
+  //   );
+  // };
 
   const getChartData = () => {
     return categories?.map((category) => ({
@@ -192,7 +196,8 @@ const BudgetTracker = () => {
               />
               <RecentExpenses
                 categories={categories}
-                expenses={getRecentExpenses()}
+                expenses={recentExpenses}
+                currency={budget?.currency}
               />
             </TabsContent>
             <TabsContent value='income'>

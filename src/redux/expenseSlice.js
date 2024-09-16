@@ -8,6 +8,7 @@ const initialState = {
   categories: null,
   expenses: null,
   loadingExpenses: false,
+  recentExpenses: null,
 };
 
 export const createCategory = createAsyncThunk(
@@ -124,6 +125,17 @@ export const deleteExpense = createAsyncThunk(
     }
   }
 );
+export const fetchRecentExpenses = createAsyncThunk(
+  'expense/get-recent-expenses',
+  async (id, thunkAPI) => {
+    try {
+      const response = await userRequest.get(`budgets/${id}/recent-expenses`);
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const expenseSlice = createSlice({
   name: 'expense',
   initialState,
@@ -168,9 +180,22 @@ export const expenseSlice = createSlice({
         state.loadingExpenses = false;
         state.expenses = action.payload;
       })
+
       .addCase(fetchAllExpenses.rejected, (state) => {
         state.loadingExpenses = false;
         state.error = false;
+      })
+      .addCase(fetchRecentExpenses.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchRecentExpenses.fulfilled, (state, action) => {
+        state.loading = false;
+        state.recentExpenses = action.payload;
+      })
+      .addCase(fetchRecentExpenses.rejected, (state) => {
+        state.error = false;
+        state.loading = false;
       });
   },
 });

@@ -11,7 +11,7 @@ const CustomProgress = ({ value, className }) => {
             ? 'bg-orange-600'
             : value >= 50
             ? 'bg-red-600'
-            : 'bg-blue-600'
+            : 'bg-green-500'
         }`}
         style={{ width: `${value}%` }}
       />

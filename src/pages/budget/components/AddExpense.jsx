@@ -20,6 +20,7 @@ import {
   editExpense,
   fetchAllCategories,
   fetchAllExpenses,
+  fetchRecentExpenses,
   resetExpenses,
 } from '../../../redux/expenseSlice';
 import { showErrorMessage } from '../../../components/toast/Toast';
@@ -97,8 +98,10 @@ const AddExpense = ({
         date: '',
       });
       setEditingExpense(null);
+
       await dispatch(fetchSingleBudget(id)).unwrap();
       await dispatch(fetchAllCategories(id)).unwrap();
+      await dispatch(fetchRecentExpenses({ id })).unwrap();
     } catch (err) {
       setIsLoading(false);
       showErrorMessage(err.message || 'Failed to add expense');
@@ -123,6 +126,7 @@ const AddExpense = ({
       ).unwrap();
       await dispatch(fetchAllCategories(id)).unwrap();
       await dispatch(fetchSingleBudget(id)).unwrap();
+      await dispatch(fetchRecentExpenses({ id })).unwrap();
       setEditingExpense(null);
       setDeletingExpense((prev) => ({
         ...prev,
