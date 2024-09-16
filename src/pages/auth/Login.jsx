@@ -18,7 +18,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, watch } = useForm({
     defaultValues: {
       email: '',
       password: '',
@@ -46,6 +46,9 @@ const Login = () => {
   const handleGoogleAuth = () => {
     window.location.href = `${import.meta.env.VITE_APP_BASE_URL}auth/google`;
   };
+
+  const password = watch('password');
+  const email = watch('email');
   return (
     <>
       <Toaster />
@@ -127,7 +130,7 @@ const Login = () => {
               </div>
               <div>
                 <button
-                  disabled={loading}
+                  disabled={email && password ? false : true}
                   type='submit'
                   className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                 >
@@ -186,6 +189,7 @@ const Login = () => {
             <div className='mt-6 text-center text-sm'>
               <span className='text-gray-600'>Don&apos;t have an account?</span>
               <button
+                disabled={loading}
                 onClick={() => navigate(ROUTES.signup)}
                 className='ml-1 font-medium text-green-600 hover:text-green-500'
               >

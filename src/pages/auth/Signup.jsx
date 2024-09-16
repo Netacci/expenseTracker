@@ -26,14 +26,11 @@ const Signup = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, watch } = useForm({
     defaultValues: {
       firstName: '',
-      lastName: '',
       email: '',
       password: '',
-      accountType: 'individual',
-      phone: '',
     },
   });
   const handleRegister = (data) => {
@@ -58,6 +55,9 @@ const Signup = () => {
   const handleGoogleAuth = () => {
     window.location.href = `${import.meta.env.VITE_APP_BASE_URL}auth/google`;
   };
+  const name = watch('firstName');
+  const email = watch('email');
+  const password = watch('password');
 
   return (
     <>
@@ -162,6 +162,7 @@ const Signup = () => {
               </div>
               <div>
                 <button
+                  disabled={name && email && password ? false : true}
                   type='submit'
                   className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                 >
