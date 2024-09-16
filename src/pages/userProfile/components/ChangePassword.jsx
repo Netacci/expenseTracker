@@ -10,11 +10,12 @@ import {
   showErrorMessage,
   showToastMessage,
 } from '../../../components/toast/Toast';
+import PasswordValidator from '../../auth/components/PasswordValidator';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, watch } = useForm({
     defaultValues: {
       currentPassword: '',
       newPassword: '',
@@ -40,6 +41,8 @@ const ChangePassword = () => {
         setLoading(false);
       });
   };
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const password = watch('newPassword');
   return (
     <Card>
       <CardHeader>
@@ -70,18 +73,15 @@ const ChangePassword = () => {
               {...register('newPassword')}
             />
           </div>
+          <PasswordValidator
+            password={password}
+            setIsPasswordValid={setIsPasswordValid}
+          />
 
-          {/* <div>
-                <Label htmlFor='confirmPassword'>Confirm New Password</Label>
-                <Input
-                  id='confirmPassword'
-                  type='password'
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div> */}
-          <Button type='submit' disabled={loading}>
+          <Button
+            type='submit'
+            disabled={!password || !isPasswordValid || loading}
+          >
             {loading ? <span>Loading...</span> : 'Change Password'}
           </Button>
         </form>

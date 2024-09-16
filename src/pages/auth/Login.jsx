@@ -13,6 +13,7 @@ import { Toaster } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { checkAuth } from '../../redux/userSlice';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,24 +28,23 @@ const Login = () => {
       password: '',
     },
   });
-  const handleLogin = (data) => {
+  const handleLogin = async (data) => {
     setLoading(true);
     const submitData = {
       first_name: data.firstName,
       email: data.email,
       password: data.password,
     };
-    dispatch(login(submitData))
-      .unwrap()
-      .then(() => {
-        setLoading(false);
-        showToastMessage('Login Successful');
-        navigate(ROUTES.dashboard);
-      })
-      .catch((err) => {
-        showErrorMessage(err?.response?.data?.message || 'Login Failed');
-        setLoading(false);
-      });
+    try {
+      await dispatch(login(submitData)).unwrap();
+      await dispatch(checkAuth()).unwrap();
+      showToastMessage('Login Successful');
+      navigate(ROUTES.dashboard);
+    } catch (err) {
+      showErrorMessage(err?.response?.data?.message || 'Login Failed');
+    } finally {
+      setLoading(false);
+    }
   };
   const handleGoogleAuth = () => {
     window.location.href = `${import.meta.env.VITE_APP_BASE_URL}auth/google`;
@@ -122,7 +122,7 @@ const Login = () => {
                 </div>
                 <div>
                   <Button
-                    disabled={email && password ? false : true}
+                    disabled={!email || !password || loading}
                     type='submit'
                     className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                   >

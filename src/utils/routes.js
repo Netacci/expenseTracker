@@ -11,4 +11,5 @@ export const ROUTES = {
   callback: '/auth/google/callback',
   confirmEmail: '/email/confirm/:token/:email',
   reset_password: '/reset-password/:token',
+  error: '/error',
 };

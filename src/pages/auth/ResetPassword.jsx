@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Lock, Eye, EyeOff } from 'lucide-react';
+import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROUTES } from '../../utils/routes';
 import { useForm } from 'react-hook-form';
@@ -7,6 +7,9 @@ import { useDispatch } from 'react-redux';
 import { resetPassword } from '../../redux/authSlice';
 import { showErrorMessage } from '../../components/toast/Toast';
 import { Toaster } from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import PasswordValidator from './components/PasswordValidator';
 
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,12 +18,15 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token } = useParams();
-  const { handleSubmit, register } = useForm({
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const { handleSubmit, register, watch } = useForm({
     defaultValues: {
       password: '',
       confirmPassword: '',
     },
   });
+
+  const password = watch('password');
   const handleResetPassword = (data) => {
     setLoading(true);
     if (data.password === data.confirmPassword) {
@@ -71,11 +77,11 @@ const ResetPassword = () => {
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                     <Lock className='h-5 w-5 text-gray-400' />
                   </div>
-                  <input
+                  <Input
                     type={showPassword ? 'text' : 'password'}
                     id='password'
                     name='password'
-                    className='focus:ring-green-500 focus:border-green-500 block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md py-2'
+                    className='w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md'
                     placeholder='••••••••'
                     required
                     {...register('password')}
@@ -106,24 +112,32 @@ const ResetPassword = () => {
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                     <Lock className='h-5 w-5 text-gray-400' />
                   </div>
-                  <input
+                  <Input
                     type={showPassword ? 'text' : 'password'}
                     id='confirmPassword'
                     name='confirmPassword'
-                    className='focus:ring-green-500 focus:border-green-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2'
+                    className=' w-full pl-10 sm:text-sm border-gray-300 rounded-md '
                     placeholder='••••••••'
                     required
                     {...register('confirmPassword')}
                   />
                 </div>
+                <PasswordValidator
+                  password={password}
+                  setIsPasswordValid={setIsPasswordValid}
+                />
               </div>
-              <button
+              <Button
                 type='submit'
-                disabled={loading}
+                disabled={!password || !isPasswordValid || loading}
                 className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
               >
-                {loading ? <span>Resetting...</span> : 'Reset Password'}
-              </button>
+                {loading ? (
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                ) : (
+                  'Reset Password'
+                )}
+              </Button>
             </form>
           ) : (
             <div className='text-center'>
@@ -135,12 +149,12 @@ const ResetPassword = () => {
                 Your password has been successfully reset. You can now log in
                 with your new password.
               </p>
-              <button
+              <Button
                 onClick={() => navigate(ROUTES.login)}
                 className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
               >
                 Go to Login
-              </button>
+              </Button>
             </div>
           )}
         </div>

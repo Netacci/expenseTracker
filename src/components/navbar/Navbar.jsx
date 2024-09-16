@@ -14,6 +14,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '../../utils/routes';
 import AddBudgetForm from '../../pages/budgets/components/AddBudget';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/userSlice';
 
 const DesktopNavLink = ({ to, children }) => (
   <NavLink
@@ -52,10 +54,15 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddBudgetOpen, setIsAddBudgetOpen] = useState(false);
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate(ROUTES.login);
-    window.location.reload();
+  const dispatch = useDispatch();
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+      navigate(ROUTES.login);
+      // window.location.reload();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return (

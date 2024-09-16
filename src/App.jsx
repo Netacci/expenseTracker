@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ROUTES } from './utils/routes.js';
 import PrivateRoute from './components/privateRoute/PrivateRoute.jsx';
 import Loader from './components/loader/Loader.jsx';
+import AuthProvider from './context/AuthProvider.jsx';
 
 const App = () => {
   const Home = lazy(() => import('./pages/home/Home.jsx'));
@@ -20,14 +21,24 @@ const App = () => {
   const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword.jsx'));
   const VerifyEmail = lazy(() => import('./pages/auth/VerifyEmail.jsx'));
   const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
+  const Error = lazy(() => import('./pages/error/Error.jsx'));
+
   return (
-    <>
+    <AuthProvider>
       <Routes>
         <Route
           path={ROUTES.signup}
           element={
             <Suspense fallback={<Loader />}>
               <Signup />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTES.error}
+          element={
+            <Suspense fallback={<Loader />}>
+              <Error />
             </Suspense>
           }
         />
@@ -140,7 +151,7 @@ const App = () => {
           }
         />
       </Routes>
-    </>
+    </AuthProvider>
   );
 };
 
