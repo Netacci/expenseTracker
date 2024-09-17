@@ -40,8 +40,8 @@ const MobileNavLink = ({ to, icon: Icon, label }) => (
   >
     {({ isActive }) => (
       <>
-        <Icon className={`h-6 w-6 ${isActive ? 'text-blue-600' : ''}`} />
-        <span className={`text-xs ${isActive ? 'text-blue-600' : ''}`}>
+        <Icon className={`h-6 w-6 ${isActive ? 'text-green-600' : ''}`} />
+        <span className={`text-xs ${isActive ? 'text-green-600' : ''}`}>
           {label}
         </span>
       </>
@@ -173,7 +173,7 @@ const Navbar = () => {
             size='icon'
             onClick={() => setIsAddBudgetOpen(true)}
           >
-            <PlusCircle className='h-6 w-6 text-blue-600' />
+            <PlusCircle className='h-6 w-6 text-green-600' />
             <span className='text-xs'>Add Budget</span>
           </Button>
         </div>
