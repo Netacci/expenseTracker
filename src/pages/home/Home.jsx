@@ -195,7 +195,7 @@ const Home = () => {
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
                 <a
-                  href='#'
+                  href='/signup'
                   className='bg-white text-green-600 px-8 py-3 rounded-full font-semibold hover:bg-green-100 transition duration-300 inline-block mb-4 md:mb-0'
                 >
                   Register
@@ -315,7 +315,7 @@ const Home = () => {
             today.
           </p>
           <a
-            href='#'
+            href='/signup'
             className='bg-white text-green-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-100 transition duration-300 inline-block'
           >
             Join now
