@@ -27,7 +27,6 @@ import { showErrorMessage } from '../../../components/toast/Toast';
 import { currencySymbol, startProgressInterval } from '../../../utils/helper';
 import { Progress } from '@/components/ui/progress';
 import { fetchSingleBudget } from '../../../redux/budgetSlice';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const AddExpense = ({
   selectedCategoryExpense,
@@ -156,10 +155,11 @@ const AddExpense = ({
   };
   return (
     <Sheet open={!!selectedCategoryExpense} onOpenChange={handleClose}>
-      <SheetContent className='max-h-[100vh] overflow-auto'>
+      <SheetContent className='px-2 sm:px-6 sm max-h-[100vh] overflow-auto'>
         <SheetHeader>
-          <SheetTitle>Expenses</SheetTitle>
+          <SheetTitle className='text-left'>Expenses</SheetTitle>
         </SheetHeader>
+
         {expenses ? (
           <div className='mt-4'>
             <ul className='space-y-3'>
@@ -216,7 +216,6 @@ const AddExpense = ({
                 </li>
               ))}
             </ul>
-
             <form className='mt-4' onSubmit={handleSubmit(handleAddExpense)}>
               <div className='mb-2'>
                 <Input
@@ -273,10 +272,62 @@ const AddExpense = ({
             </form>
           </div>
         ) : (
-          <div className='mt-4 '>
-            <Skeleton className='w-[100px] h-[50px] ' />
-            <Skeleton className='w-[200px] h-[200px] mt-4 ' />
-          </div>
+          <>
+            <form className='mt-4' onSubmit={handleSubmit(handleAddExpense)}>
+              <div className='mb-2'>
+                <Input
+                  placeholder='Expense name'
+                  id='name'
+                  {...register('name', { required: 'Name is required' })}
+                  className='w-full'
+                />
+                {errors.name && (
+                  <p className='text-red-500 text-sm mt-1'>
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+              <div className='mb-2'>
+                <Input
+                  id='amount'
+                  type='number'
+                  placeholder='Amount'
+                  {...register('amount', {
+                    required: 'Amount is required',
+                    min: { value: 0, message: 'Amount must be positive' },
+                  })}
+                  className='w-full'
+                />
+                {errors.amount && (
+                  <p className='text-red-500 text-sm mt-1'>
+                    {errors.amount.message}
+                  </p>
+                )}
+              </div>
+
+              <DateInput name={'date'} control={control} errors={errors} />
+              <div className='mt-2'>
+                <Button className='mt-2' type='submit'>
+                  {isLoading ? (
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  ) : editingExpense ? (
+                    'Update Expense'
+                  ) : (
+                    'Add Expense'
+                  )}
+                </Button>
+                {editingExpense && (
+                  <Button
+                    variant='ghost'
+                    className='mt-2'
+                    onClick={() => setEditingExpense(null)}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
+            </form>
+          </>
         )}
       </SheetContent>
     </Sheet>

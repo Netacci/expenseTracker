@@ -48,30 +48,28 @@ const AddBudgetForm = ({ isOpen, onClose, budget }) => {
     handleSubmit,
     formState: { errors },
     setValue,
-
+    watch,
     control,
   } = useForm({
     defaultValues: {
       name: budget?.name || '',
-      amount: budget?.amount || '',
       currency: budget?.currency || 'USD',
       startDate: budget?.start_date || '',
       endDate: budget?.end_date || '',
       description: budget?.description || '',
     },
   });
+  const { name, currency, startDate, endDate } = watch();
 
   useEffect(() => {
     if (budget) {
       setValue('name', budget?.name);
-      setValue('amount', budget?.amount);
       setValue('currency', budget?.currency);
       setValue('startDate', budget?.start_date);
       setValue('endDate', budget?.end_date);
       setValue('description', budget?.description);
     } else {
       setValue('name', '');
-      setValue('amount', '');
       setValue('currency', 'USD');
       setValue('startDate', '');
       setValue('endDate', '');
@@ -85,7 +83,6 @@ const AddBudgetForm = ({ isOpen, onClose, budget }) => {
       const id = budget?.id;
       const submitData = {
         name: data.name,
-        amount: Number(data.amount),
         currency: data.currency,
         start_date: data.startDate,
         end_date: data.endDate,
@@ -103,15 +100,15 @@ const AddBudgetForm = ({ isOpen, onClose, budget }) => {
         navigate(`/budget/${res.id}`);
       }
       onClose();
-      setLoading(false);
       showToastMessage(
         budget ? 'Budget updated successfully' : 'Budget created successfully'
       );
     } catch (err) {
-      setLoading(false);
       showErrorMessage(
         err?.response?.data?.message || 'Something went wrong. Try again!'
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -143,7 +140,7 @@ const AddBudgetForm = ({ isOpen, onClose, budget }) => {
               )}
             </div>
             <div>
-              <Label htmlFor='name'>Description</Label>
+              <Label htmlFor='name'>Description(Optional)</Label>
               <Textarea
                 id='description'
                 {...register('description')}
@@ -188,7 +185,12 @@ const AddBudgetForm = ({ isOpen, onClose, budget }) => {
             />
 
             <SheetFooter>
-              <Button type='submit'>
+              <Button
+                type='submit'
+                disabled={
+                  loading || !name || !currency || !startDate || !endDate
+                }
+              >
                 {loading ? (
                   <Loader2 className='animate-spin h-4 w-4' />
                 ) : budget ? (
