@@ -4,7 +4,6 @@ import { ROUTES } from '../../utils/routes';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('Xtoken');
-  console.log(token);
 
   if (!token) {
     // navigate to home page
