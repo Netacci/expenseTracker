@@ -13,7 +13,6 @@ import { Toaster } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { checkAuth } from '../../redux/userSlice';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -37,15 +36,10 @@ const Login = () => {
     };
     try {
       await dispatch(login(submitData)).unwrap();
+
       showToastMessage('Login Successful');
       navigate(ROUTES.dashboard);
-      // const res = await dispatch(checkAuth()).unwrap();
-      // if (res.status === 200) {
-      //   showToastMessage('Login Successful');
-      //   navigate(ROUTES.dashboard);
-      // }
     } catch (err) {
-      console.log(err);
       showErrorMessage(
         err?.response?.data?.message || err?.response?.data || 'Login Failed'
       );

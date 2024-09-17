@@ -49,6 +49,8 @@ export const login = createAsyncThunk('auth/login', async (data, thunkAPI) => {
   try {
     const response = await publicRequest.post('auth/login', data);
 
+    localStorage.setItem('Xtoken', response.data.token);
+
     return response.data.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);

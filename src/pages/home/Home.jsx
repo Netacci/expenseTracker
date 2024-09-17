@@ -95,7 +95,7 @@ const Home = () => {
                 href='#pricing'
                 className='text-gray-800 hover:text-green-600 transition duration-300'
               >
-                Pricing
+                About
               </a>
             </div>
             <div className='hidden md:flex space-x-4'>
@@ -143,12 +143,12 @@ const Home = () => {
             >
               Testimonials
             </a>
-            <a
+            {/* <a
               href='#pricing'
               className='block py-2 px-4 text-sm hover:bg-gray-100'
             >
               Pricing
-            </a>
+            </a> */}
             <a
               href={ROUTES.login}
               className='block py-2 px-4 text-sm hover:bg-gray-100'

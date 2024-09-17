@@ -120,7 +120,8 @@ const BudgetTracker = () => {
   // const warningCategoryvalue =
   //   budget?.total_budget > budget?.total_income ? true : false;
   const warningvalue =
-    budget?.total_expense > budget?.total_income ? true : false;
+    budget?.total_expenses > budget?.total_income ? true : false;
+
   return (
     <Layout>
       {budget && (

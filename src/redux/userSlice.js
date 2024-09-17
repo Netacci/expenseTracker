@@ -57,26 +57,6 @@ export const editAccount = createAsyncThunk(
   }
 );
 
-export const checkAuth = createAsyncThunk(
-  'user/check-auth',
-  async (_, thunkAPI) => {
-    try {
-      const response = await userRequest.get('auth/check');
-      console.log(response);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-export const logout = createAsyncThunk('user/logout', async (_, thunkAPI) => {
-  try {
-    const response = await userRequest.post('auth/logout');
-    return response;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
 export const userSlice = createSlice({
   name: 'user',
   initialState,
