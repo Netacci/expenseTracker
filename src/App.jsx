@@ -21,9 +21,17 @@ const App = () => {
   const VerifyEmail = lazy(() => import('./pages/auth/VerifyEmail.jsx'));
   const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
   const Error = lazy(() => import('./pages/error/Error.jsx'));
-
+  const GooglePage = lazy(() => import('./pages/auth/GooglePage.jsx'));
   return (
     <Routes>
+      <Route
+        path={ROUTES.google_redirect}
+        element={
+          <Suspense fallback={<Loader />}>
+            <GooglePage />
+          </Suspense>
+        }
+      />
       <Route
         path={ROUTES.signup}
         element={

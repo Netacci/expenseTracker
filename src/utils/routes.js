@@ -9,6 +9,7 @@ export const ROUTES = {
   registerSuccess: '/register-success',
   forgot_password: '/forgot-password',
   callback: '/auth/google/callback',
+  google_redirect: '/google-auth',
   confirmEmail: '/email/confirm/:token/:email',
   reset_password: '/reset-password/:token',
   error: '/error',

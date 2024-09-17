@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   budgets: null,
   budget: null,
+  report: null,
 };
 
 export const createBudget = createAsyncThunk(
@@ -68,6 +69,18 @@ export const deleteBudget = createAsyncThunk(
     }
   }
 );
+export const generateReport = createAsyncThunk(
+  'budget/generate-report',
+  async (id, thunkAPI) => {
+    try {
+      const response = await userRequest.post(`budgets/${id}/generate-report`);
+      console.log(response);
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const budgetSlice = createSlice({
   name: 'budget',
   initialState,
@@ -112,6 +125,19 @@ export const budgetSlice = createSlice({
         state.budget = action.payload;
       })
       .addCase(fetchSingleBudget.rejected, (state) => {
+        state.loading = false;
+        state.error = false;
+      })
+      .addCase(generateReport.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(generateReport.fulfilled, (state, action) => {
+        state.loading = false;
+
+        state.report = action.payload.report;
+      })
+      .addCase(generateReport.rejected, (state) => {
         state.loading = false;
         state.error = false;
       });

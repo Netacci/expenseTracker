@@ -57,7 +57,7 @@ const Signup = () => {
       });
   };
   const handleGoogleAuth = () => {
-    window.location.href = `${import.meta.env.VITE_APP_BASE_URL}auth/google`;
+    navigate(ROUTES.google_redirect);
   };
   const name = watch('firstName');
   const email = watch('email');
