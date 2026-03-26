@@ -1,100 +1,88 @@
 /* eslint-disable react/prop-types */
 import { Button } from '@/components/ui/button';
-import {
-  PlusCircle,
-  Edit,
-  Trash2,
-  EllipsisVertical,
-  Download,
-  Loader2,
-} from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Info } from 'lucide-react';
 import BudgetInfo from './BudgetInfo';
 import { useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { generateReport } from '../../../redux/budgetSlice';
-// import { showErrorMessage } from '../../../components/toast/Toast';
+
 const BudgetHeader = ({
   handleEdit,
   handleOpenDelete,
   budget,
+  /** Monthly plan (for plan month range when `budget` is a spending group) */
+  plan,
   setIsAddIncomeOpen,
   setIsAddCategoryOpen,
   activeTab,
+  hideIncomeActions = false,
+  subtitle,
+  /** When true, show “Add category” even if another tab is selected (bucket page). */
+  alwaysShowAddCategory = false,
 }) => {
   const [openDetails, setOpenDetails] = useState(false);
-  // const [generatingReport, setGeneratingReport] = useState(false);
-
-  // const dispatch = useDispatch();
-  // const handleGenerateReport = async () => {
-  //   setGeneratingReport(true);
-  //   try {
-  //     await dispatch(generateReport(budget?.id)).unwrap();
-  //   } catch (err) {
-  //     console.log(err);
-  //     showErrorMessage('Error generating report', 'error');
-  //   } finally {
-  //     setGeneratingReport(false);
-  //   }
-  // };
 
   return (
-    <div className='flex flex-col  mb-6 sm:flex-row sm:justify-between sm:items-center'>
-      <div className='flex items-center '>
-        <h1 className='text-2xl sm:text-3xl font-bold'>{budget?.name}</h1>
-
-        <Button
-          variant='ghost'
-          size='icon'
-          onClick={() => setOpenDetails(true)}
-        >
-          <EllipsisVertical className='h-4 w-4' />
-        </Button>
-        <Button variant='ghost' size='icon' onClick={handleEdit}>
-          <Edit className='h-4 w-4' />
-        </Button>
-        <Button variant='ghost' size='icon' onClick={handleOpenDelete}>
-          <Trash2 className='h-4 w-4 text-red-500' />
-        </Button>
-        {/* <Button
-          variant='ghost'
-          className='p-0 m-0 text-blue-500 underline hover:no-underline'
-          onClick={handleGenerateReport}
-        >
-          Generate report
-        </Button> */}
-        {/* {generatingReport ? (
-          <Loader2 className='h-4 w-4 animate-spin' />
-        ) : budget?.reportGenerated ? (
-          <Button variant='ghost' size='icon' onClick={handleOpenDelete}>
-            <Download className='mr-2 h-4 w-4' />
-          </Button>
-        ) : null} */}
+    <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6'>
+      <div className='flex items-center gap-3 min-w-0'>
+        <div>
+          <div className='flex items-center gap-2'>
+            <h1 className='text-2xl font-bold text-slate-900 truncate'>{budget?.name}</h1>
+            <button
+              onClick={() => setOpenDetails(true)}
+              className='p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0'
+              title='Details'
+            >
+              <Info className='h-4 w-4' />
+            </button>
+          </div>
+          {subtitle && (
+            <p className='text-sm text-slate-500 mt-0.5 truncate max-w-sm'>{subtitle}</p>
+          )}
+          {!subtitle && budget?.description && (
+            <p className='text-sm text-slate-500 mt-0.5 truncate max-w-sm'>{budget.description}</p>
+          )}
+        </div>
       </div>
-      <div className='flex  sm:justify-end sm:space-x-2 mt-4'>
-        {activeTab === 'income' && (
+
+      <div className='flex items-center gap-2 flex-shrink-0'>
+        {!hideIncomeActions && activeTab === 'income' && (
           <Button
             onClick={() => setIsAddIncomeOpen(true)}
-            variant='outline'
-            className='bg-green-50 text-green-700 hover:bg-green-100 border-green-200'
+            className='flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm text-sm font-semibold'
           >
-            <PlusCircle className='mr-2 h-4 w-4' /> Add Income
+            <PlusCircle className='h-4 w-4' />
+            Add Income
           </Button>
         )}
-        {activeTab === 'expenses' && (
+        {(activeTab === 'expenses' || alwaysShowAddCategory) && (
           <Button
             onClick={() => setIsAddCategoryOpen(true)}
-            variant='outline'
-            className='bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200'
+            className='flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl shadow-sm text-sm font-semibold'
           >
-            <PlusCircle className='mr-2 h-4 w-4' /> Create Expense Category
+            <PlusCircle className='h-4 w-4' />
+            Add category
           </Button>
         )}
+        <button
+          onClick={handleEdit}
+          className='p-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors'
+          title='Edit'
+        >
+          <Edit className='h-4 w-4' />
+        </button>
+        <button
+          onClick={handleOpenDelete}
+          className='p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors'
+          title='Delete spending group'
+        >
+          <Trash2 className='h-4 w-4' />
+        </button>
       </div>
 
       <BudgetInfo
         isOpen={openDetails}
         isClose={() => setOpenDetails(false)}
         budget={budget}
+        plan={plan}
       />
     </div>
   );

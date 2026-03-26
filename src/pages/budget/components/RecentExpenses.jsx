@@ -1,67 +1,58 @@
 /* eslint-disable react/prop-types */
-import { Card, CardContent } from '@/components/ui/card';
 import { format } from 'date-fns';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import Empty from '../../../components/empty/Empty';
 import { currencySymbol } from '../../../utils/helper';
+import { docId } from '../../../utils/docId';
+import { Receipt } from 'lucide-react';
 
 const RecentExpenses = ({ expenses, currency }) => {
+  const fmt = (n) =>
+    Intl.NumberFormat('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 }).format(n || 0);
+
   return (
     <div className='mb-6'>
-      <div className='flex justify-between items-center'>
-        <h2 className='text-2xl font-bold'>Recent Expenses</h2>
+      <div className='flex items-center gap-2 mb-4'>
+        <h3 className='text-lg font-bold text-slate-900'>Recent Expenses</h3>
+        <span className='text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-medium'>
+          Latest transactions
+        </span>
       </div>
-      <Card className='mt-6 pt-2'>
-        <CardContent>
-          <Table className='w-full '>
-            <TableHeader>
-              <TableRow className='text-left'>
-                <TableHead className='pb-2'>Date</TableHead>
-                <TableHead className='pb-2'>Name</TableHead>
-                <TableHead className='pb-2'>Category</TableHead>
-                <TableHead className='pb-2 text-right'>Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            {expenses?.length === 0 || !expenses ? (
-              <TableBody>
-                <TableRow>
-                  <TableCell colSpan={4} className='h-[300px] text-center'>
-                    <Empty
-                      text='No expenses'
-                      subtext={'No expenses added yet.'}
-                    />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            ) : null}
-            <TableBody>
-              {expenses?.map((expense) => (
-                <TableRow key={expense.id}>
-                  <TableCell className='py-2 '>
-                    {format(new Date(expense.date), 'MMM d, yyyy')}
-                  </TableCell>
-                  <TableCell className='py-2'>{expense.name}</TableCell>
-                  <TableCell className='py-2'>{expense.categoryName}</TableCell>
-                  <TableCell className='py-2 text-right'>
-                    {currencySymbol(currency)}{' '}
-                    {Intl.NumberFormat('en-US', {
-                      maximumFractionDigits: 0,
-                      minimumFractionDigits: 0,
-                    }).format(expense.amount || 0)}
-                  </TableCell>
-                </TableRow>
+
+      <div className='bg-white rounded-2xl border border-slate-100 shadow-card overflow-hidden'>
+        {!expenses?.length ? (
+          <div className='p-8'>
+            <Empty text='No expenses recorded' subtext='Add expenses from a category above' />
+          </div>
+        ) : (
+          <>
+            {/* Table header */}
+            <div className='grid grid-cols-4 px-4 py-3 border-b border-slate-50 bg-slate-50/80'>
+              <span className='text-xs font-semibold text-slate-400 uppercase tracking-wide'>Date</span>
+              <span className='text-xs font-semibold text-slate-400 uppercase tracking-wide'>Name</span>
+              <span className='text-xs font-semibold text-slate-400 uppercase tracking-wide'>Category</span>
+              <span className='text-xs font-semibold text-slate-400 uppercase tracking-wide text-right'>Amount</span>
+            </div>
+            {/* Table rows */}
+            <div className='divide-y divide-slate-50'>
+              {expenses.map((expense) => (
+                <div key={docId(expense)} className='grid grid-cols-4 items-center px-4 py-3 hover:bg-slate-50/60 transition-colors'>
+                  <span className='text-sm text-slate-500'>{format(new Date(expense.date), 'MMM d, yyyy')}</span>
+                  <div className='flex items-center gap-2'>
+                    <div className='w-7 h-7 bg-rose-50 rounded-lg flex items-center justify-center flex-shrink-0'>
+                      <Receipt className='h-3.5 w-3.5 text-rose-500' />
+                    </div>
+                    <span className='text-sm font-medium text-slate-800 truncate'>{expense.name}</span>
+                  </div>
+                  <span className='text-sm text-slate-500 truncate'>{expense.categoryName}</span>
+                  <span className='text-sm font-bold text-rose-600 text-right'>
+                    {currencySymbol(currency)} {fmt(expense.amount)}
+                  </span>
+                </div>
               ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

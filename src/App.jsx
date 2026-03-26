@@ -12,6 +12,10 @@ const App = () => {
   const GoogleCallback = lazy(() => import('./pages/auth/GoogleCallback.jsx'));
   const Budgets = lazy(() => import('./pages/budgets/Budgets.jsx'));
   const BudgetDetail = lazy(() => import('./pages/budget/Budget.jsx'));
+  const PlanDetail = lazy(() => import('./pages/plans/PlanDetail.jsx'));
+  const LegacyBudgetRedirect = lazy(() =>
+    import('./components/redirect/LegacyBudgetRedirect.jsx')
+  );
   const Settings = lazy(() => import('./pages/userProfile/Settings.jsx'));
   const Profile = lazy(() => import('./pages/userProfile/Profile.jsx'));
   const RegisterSuccess = lazy(() =>
@@ -22,6 +26,10 @@ const App = () => {
   const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
   const Error = lazy(() => import('./pages/error/Error.jsx'));
   const GooglePage = lazy(() => import('./pages/auth/GooglePage.jsx'));
+  const Invoices = lazy(() => import('./pages/invoices/Invoices.jsx'));
+  const Subscriptions = lazy(() => import('./pages/subscriptions/Subscriptions.jsx'));
+  const ReportsList = lazy(() => import('./pages/reports/ReportsList.jsx'));
+  const ReportView = lazy(() => import('./pages/reports/ReportView.jsx'));
   return (
     <Routes>
       <Route
@@ -99,6 +107,26 @@ const App = () => {
         }
       />
       <Route
+        path={ROUTES.invoices}
+        element={
+          <Suspense fallback={<Loader />}>
+            <PrivateRoute>
+              <Invoices />
+            </PrivateRoute>
+          </Suspense>
+        }
+      />
+      <Route
+        path={ROUTES.subscriptions}
+        element={
+          <Suspense fallback={<Loader />}>
+            <PrivateRoute>
+              <Subscriptions />
+            </PrivateRoute>
+          </Suspense>
+        }
+      />
+      <Route
         path={ROUTES.budgets}
         element={
           <Suspense fallback={<Loader />}>
@@ -109,12 +137,50 @@ const App = () => {
         }
       />
       <Route
-        path='/budget/:id'
+        path='/plans/:planId'
+        element={
+          <Suspense fallback={<Loader />}>
+            <PrivateRoute>
+              <PlanDetail />
+            </PrivateRoute>
+          </Suspense>
+        }
+      />
+      <Route
+        path='/plans/:planId/buckets/:bucketId'
         element={
           <Suspense fallback={<Loader />}>
             <PrivateRoute>
               <BudgetDetail />
             </PrivateRoute>
+          </Suspense>
+        }
+      />
+      <Route
+        path={ROUTES.reports}
+        element={
+          <Suspense fallback={<Loader />}>
+            <PrivateRoute>
+              <ReportsList />
+            </PrivateRoute>
+          </Suspense>
+        }
+      />
+      <Route
+        path={`${ROUTES.reports}/:planId`}
+        element={
+          <Suspense fallback={<Loader />}>
+            <PrivateRoute>
+              <ReportView />
+            </PrivateRoute>
+          </Suspense>
+        }
+      />
+      <Route
+        path='/budget/:id'
+        element={
+          <Suspense fallback={<Loader />}>
+            <LegacyBudgetRedirect />
           </Suspense>
         }
       />

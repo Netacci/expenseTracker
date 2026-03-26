@@ -3,7 +3,12 @@ export const ROUTES = {
   login: '/login',
   signup: '/signup',
   dashboard: '/dashboard',
-  budgets: '/budgets',
+  budgets: '/plans',
+  plans: '/plans',
+  /** Saved AI reports (sidebar label: Tabs) */
+  reports: '/reports',
+  invoices: '/invoices',
+  subscriptions: '/subscriptions',
   settings: '/settings',
   profile: '/profile',
   registerSuccess: '/register-success',

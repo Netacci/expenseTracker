@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-
 import {
   Select,
   SelectContent,
@@ -15,94 +14,118 @@ import {
 } from '@/components/ui/select';
 import { useDispatch } from 'react-redux';
 import {
-  createBudget,
-  editBudget,
-  fetchAllBudgets,
-  fetchSingleBudget,
-  resetBudget,
-} from '../../../redux/budgetSlice';
-import {
-  showErrorMessage,
-  showToastMessage,
-} from '../../../components/toast/Toast';
+  createMonthlyPlan,
+  editMonthlyPlan,
+} from '../../../redux/monthlyPlanSlice';
+import { fetchAllBudgets } from '../../../redux/budgetSlice';
+import { showErrorMessage, showToastMessage } from '../../../components/toast/Toast';
 import { useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetFooter,
-} from '@/components/ui/sheet';
-import DateInput from '../../../components/dateInput/DateInput';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Loader2 } from 'lucide-react';
+import GuidedBudgetWizard from './GuidedBudgetWizard';
 
-const AddBudgetForm = ({ isOpen, onClose, budget }) => {
+/** Create (guided) or edit a monthly plan — income is shared; categories & expenses live under “Spending”. */
+const AddBudgetForm = ({ isOpen, onClose, plan, mode = 'create' }) => {
   const [loading, setLoading] = useState(false);
+  const [guidedWizardKey, setGuidedWizardKey] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
     setValue,
     watch,
-    control,
   } = useForm({
     defaultValues: {
-      name: budget?.name || '',
-      currency: budget?.currency || 'USD',
-      startDate: budget?.start_date || '',
-      endDate: budget?.end_date || '',
-      description: budget?.description || '',
+      name: '',
+      currency: 'USD',
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      description: '',
     },
   });
-  const { name, currency, startDate, endDate } = watch();
 
+  const { currency } = watch();
+
+  /** Stable key so we don't depend on `plan` object identity (new ref every render). */
+  const planKey = plan ? String(plan._id ?? plan.id) : null;
+
+  /**
+   * Sync form when the sheet opens or plan/mode context changes.
+   * Never list `setValue` in deps — react-hook-form can give a new `setValue` reference
+   * after updates, which would re-run this effect and clear `name` on every keystroke.
+   */
   useEffect(() => {
-    if (budget) {
-      setValue('name', budget?.name);
-      setValue('currency', budget?.currency);
-      setValue('startDate', budget?.start_date);
-      setValue('endDate', budget?.end_date);
-      setValue('description', budget?.description);
-    } else {
+    if (!isOpen) return;
+    const d = new Date();
+    if (mode === 'edit' && plan) {
+      setValue('name', plan.name || '');
+      setValue('currency', plan.currency || 'USD');
+      setValue('year', plan.year ?? d.getFullYear());
+      setValue('month', plan.month ?? d.getMonth() + 1);
+      setValue('description', plan.description || '');
+    } else if (mode === 'create') {
       setValue('name', '');
       setValue('currency', 'USD');
-      setValue('startDate', '');
-      setValue('endDate', '');
+      setValue('year', d.getFullYear());
+      setValue('month', d.getMonth() + 1);
       setValue('description', '');
     }
-  }, [setValue, budget]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- plan/setValue intentionally omitted; see above
+  }, [isOpen, mode, planKey]);
 
-  const handleFormSubmit = async (data) => {
+  useEffect(() => {
+    if (isOpen && mode === 'create') {
+      setGuidedWizardKey((k) => k + 1);
+    }
+  }, [isOpen, mode]);
+
+  const handleGuidedSubmit = async (payload) => {
     try {
       setLoading(true);
-      const id = budget?.id;
-      const submitData = {
-        name: data.name,
-        currency: data.currency,
-        start_date: data.startDate,
-        end_date: data.endDate,
-        description: data.description,
-        ...(budget && { id }),
-      };
-      const updateBudget = budget ? editBudget : createBudget;
-      const res = await dispatch(updateBudget(submitData)).unwrap();
-      if (budget) {
-        await dispatch(fetchSingleBudget(id)).unwrap();
-        await dispatch(fetchAllBudgets()).unwrap();
-      } else {
-        await dispatch(fetchAllBudgets()).unwrap();
-        dispatch(resetBudget());
-        navigate(`/budget/${res.id}`);
-      }
+      const res = await dispatch(createMonthlyPlan(payload)).unwrap();
+      await dispatch(fetchAllBudgets()).unwrap();
+      navigate(`/plans/${res._id || res.id}`);
       onClose();
       showToastMessage(
-        budget ? 'Budget updated successfully' : 'Budget created successfully'
+        'Plan created — you can edit categories and amounts anytime.'
       );
+    } catch (err) {
+      showErrorMessage(
+        err?.response?.data?.message ||
+          err?.message ||
+          'Could not create plan. Try again.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditSubmit = async (data) => {
+    if (!plan) return;
+    try {
+      setLoading(true);
+      const id = plan._id || plan.id;
+      await dispatch(
+        editMonthlyPlan({
+          id,
+          name: data.name?.trim(),
+          currency: data.currency,
+          description: data.description,
+        })
+      ).unwrap();
+      await dispatch(fetchAllBudgets()).unwrap();
+      onClose();
+      showToastMessage('Plan updated');
     } catch (err) {
       showErrorMessage(
         err?.response?.data?.message || 'Something went wrong. Try again!'
@@ -113,96 +136,89 @@ const AddBudgetForm = ({ isOpen, onClose, budget }) => {
   };
 
   const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'NGN'];
+
   return (
     <>
       <Toaster />
-      <Sheet open={isOpen} onOpenChange={onClose}>
-        <SheetContent className='w-full sm:max-h-[100vh] overflow-auto'>
-          <SheetHeader>
-            <SheetTitle>
-              {' '}
-              {budget ? 'Edit Budget' : 'Add New Budget'}
-            </SheetTitle>{' '}
-          </SheetHeader>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (!open) onClose();
+        }}
+      >
+        <DialogContent className='max-h-[90vh] max-w-2xl overflow-y-auto'>
+          <DialogHeader>
+            <DialogTitle>
+              {mode === 'edit' ? 'Edit monthly plan' : 'New monthly plan'}
+            </DialogTitle>
+            <DialogDescription className='text-left'>
+              {mode === 'edit'
+                ? 'Update the label, currency, or notes for this month.'
+                : 'We’ll ask one question at a time, then create your plan with the budgets you set.'}
+            </DialogDescription>
+          </DialogHeader>
 
-          <form onSubmit={handleSubmit(handleFormSubmit)} className='space-y-4'>
-            <div>
-              <Label htmlFor='name'>Budget Name</Label>
-              <Input
-                id='name'
-                {...register('name', { required: 'Budget name is required' })}
-                className='w-full'
-              />
-              {errors.name && (
-                <p className='text-red-500 text-sm mt-1'>
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor='name'>Description(Optional)</Label>
-              <Textarea
-                id='description'
-                {...register('description')}
-                className='w-full'
-              />
-
-              {errors.description && (
-                <p className='text-red-500 text-sm mt-1'>
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor='currency'>Currency</Label>
-              <Select
-                onValueChange={(value) => setValue('currency', value)}
-                defaultValue={budget?.currency || 'USD'}
-              >
-                <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='Select currency' />
-                </SelectTrigger>
-                <SelectContent>
-                  {currencies.map((currency) => (
-                    <SelectItem key={currency} value={currency}>
-                      {currency}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <DateInput
-              label={'Start Date'}
-              name={'startDate'}
-              control={control}
-              errors={errors}
+          {mode === 'create' ? (
+            <GuidedBudgetWizard
+              key={guidedWizardKey}
+              onSubmit={handleGuidedSubmit}
+              loading={loading}
+              disabled={loading}
             />
-            <DateInput
-              label={'End Date'}
-              name={'endDate'}
-              control={control}
-              errors={errors}
-            />
+          ) : (
+            <form
+              onSubmit={handleSubmit(handleEditSubmit)}
+              className='space-y-4'
+            >
+              <div>
+                <Label htmlFor='name'>Label (optional)</Label>
+                <Input
+                  id='name'
+                  placeholder='e.g. March focus'
+                  {...register('name')}
+                  className='w-full'
+                />
+              </div>
+              <div>
+                <Label htmlFor='currency'>Currency</Label>
+                <Select
+                  onValueChange={(value) => setValue('currency', value)}
+                  value={currency || 'USD'}
+                >
+                  <SelectTrigger className='w-full'>
+                    <SelectValue placeholder='Select currency' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencies.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor='description'>Notes (optional)</Label>
+                <Textarea
+                  id='description'
+                  {...register('description')}
+                  className='w-full'
+                />
+              </div>
 
-            <SheetFooter>
-              <Button
-                type='submit'
-                disabled={
-                  loading || !name || !currency || !startDate || !endDate
-                }
-              >
-                {loading ? (
-                  <Loader2 className='animate-spin h-4 w-4' />
-                ) : budget ? (
-                  'Update Budget'
-                ) : (
-                  'Create Budget'
-                )}
-              </Button>
-            </SheetFooter>
-          </form>
-        </SheetContent>
-      </Sheet>
+              <DialogFooter>
+                <Button type='submit' disabled={loading || !currency}>
+                  {loading ? (
+                    <Loader2 className='animate-spin h-4 w-4' />
+                  ) : (
+                    'Save changes'
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

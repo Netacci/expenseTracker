@@ -1,5 +1,5 @@
-import { Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 const GooglePage = () => {
   useEffect(() => {
@@ -11,8 +11,8 @@ const GooglePage = () => {
   return (
     <div>
       <h2>Redirecting to Google Authentication...</h2>
-      <div className='w-full h-full flex justify-center items-center'>
-        <Loader2 className='w-10 h-10 animate-spin' />
+      <div className="w-full h-full flex justify-center items-center">
+        <Loader2 className="w-10 h-10 animate-spin" />
       </div>
     </div>
   );

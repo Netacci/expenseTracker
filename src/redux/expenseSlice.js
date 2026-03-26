@@ -14,11 +14,11 @@ const initialState = {
 export const createCategory = createAsyncThunk(
   'category/create',
   async (data, thunkAPI) => {
-    const { id } = data;
+    const { planId, bucketId, ...body } = data;
     try {
       const response = await userRequest.post(
-        `budgets/${id}/category/create`,
-        data
+        `monthly-plans/${planId}/buckets/${bucketId}/category/create`,
+        body
       );
 
       return response.data.data;
@@ -30,11 +30,11 @@ export const createCategory = createAsyncThunk(
 export const createExpense = createAsyncThunk(
   'expense/create',
   async (data, thunkAPI) => {
-    const { id, category_id } = data;
+    const { planId, bucketId, category_id, ...body } = data;
     try {
       const response = await userRequest.post(
-        `budgets/${id}/categories/${category_id}/expense/create`,
-        data
+        `monthly-plans/${planId}/buckets/${bucketId}/categories/${category_id}/expense/create`,
+        body
       );
 
       return response.data.data;
@@ -45,9 +45,11 @@ export const createExpense = createAsyncThunk(
 );
 export const fetchAllCategories = createAsyncThunk(
   'category/fetch-all-categories',
-  async (id, thunkAPI) => {
+  async ({ planId, bucketId }, thunkAPI) => {
     try {
-      const response = await userRequest.get(`budgets/${id}/categories`);
+      const response = await userRequest.get(
+        `monthly-plans/${planId}/buckets/${bucketId}/categories`
+      );
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -57,11 +59,11 @@ export const fetchAllCategories = createAsyncThunk(
 export const editCategory = createAsyncThunk(
   'category/edit-category',
   async (data, thunkAPI) => {
-    const { id, category_id } = data;
+    const { planId, bucketId, category_id, ...body } = data;
     try {
       const response = await userRequest.put(
-        `budgets/${id}/categories/${category_id}`,
-        data
+        `monthly-plans/${planId}/buckets/${bucketId}/categories/${category_id}`,
+        body
       );
       return response.data.data;
     } catch (error) {
@@ -72,10 +74,10 @@ export const editCategory = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
   'category/delete-category',
-  async ({ id, category_id }, thunkAPI) => {
+  async ({ planId, bucketId, category_id }, thunkAPI) => {
     try {
       const response = await userRequest.delete(
-        `budgets/${id}/categories/${category_id}`
+        `monthly-plans/${planId}/buckets/${bucketId}/categories/${category_id}`
       );
       return response.data.data;
     } catch (error) {
@@ -85,10 +87,10 @@ export const deleteCategory = createAsyncThunk(
 );
 export const fetchAllExpenses = createAsyncThunk(
   'expenses/fetch-all-expenses',
-  async ({ id, category_id }, thunkAPI) => {
+  async ({ planId, bucketId, category_id }, thunkAPI) => {
     try {
       const response = await userRequest.get(
-        `budgets/${id}/categories/${category_id}/expenses`
+        `monthly-plans/${planId}/buckets/${bucketId}/categories/${category_id}/expenses`
       );
       return response.data.data;
     } catch (error) {
@@ -99,11 +101,11 @@ export const fetchAllExpenses = createAsyncThunk(
 export const editExpense = createAsyncThunk(
   'expense/edit-expense',
   async (data, thunkAPI) => {
-    const { id, category_id, expense_id } = data;
+    const { planId, bucketId, category_id, expense_id, ...body } = data;
     try {
       const response = await userRequest.put(
-        `budgets/${id}/categories/${category_id}/expenses/${expense_id}`,
-        data
+        `monthly-plans/${planId}/buckets/${bucketId}/categories/${category_id}/expenses/${expense_id}`,
+        body
       );
       return response.data.data;
     } catch (error) {
@@ -114,10 +116,10 @@ export const editExpense = createAsyncThunk(
 
 export const deleteExpense = createAsyncThunk(
   'expense/delete-expense',
-  async ({ id, category_id, expense_id }, thunkAPI) => {
+  async ({ planId, bucketId, category_id, expense_id }, thunkAPI) => {
     try {
       const response = await userRequest.delete(
-        `budgets/${id}/categories/${category_id}/expenses/${expense_id}`
+        `monthly-plans/${planId}/buckets/${bucketId}/categories/${category_id}/expenses/${expense_id}`
       );
       return response.data.data;
     } catch (error) {
@@ -127,9 +129,11 @@ export const deleteExpense = createAsyncThunk(
 );
 export const fetchRecentExpenses = createAsyncThunk(
   'expense/get-recent-expenses',
-  async (id, thunkAPI) => {
+  async (planId, thunkAPI) => {
     try {
-      const response = await userRequest.get(`budgets/${id}/recent-expenses`);
+      const response = await userRequest.get(
+        `monthly-plans/${planId}/recent-expenses`
+      );
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

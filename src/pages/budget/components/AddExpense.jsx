@@ -27,6 +27,7 @@ import { showErrorMessage } from '../../../components/toast/Toast';
 import { currencySymbol, startProgressInterval } from '../../../utils/helper';
 import { Progress } from '@/components/ui/progress';
 import { fetchSingleBudget } from '../../../redux/budgetSlice';
+import { docId } from '../../../utils/docId';
 
 const AddExpense = ({
   selectedCategoryExpense,
@@ -35,7 +36,7 @@ const AddExpense = ({
 }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const { id } = useParams();
+  const { planId, bucketId } = useParams();
   const { expenses } = useSelector((state) => state.expense);
   const [editingExpense, setEditingExpense] = useState(null);
 
@@ -56,12 +57,16 @@ const AddExpense = ({
     },
   });
   useEffect(() => {
-    if (selectedCategoryExpense) {
+    if (selectedCategoryExpense && planId && bucketId) {
       dispatch(
-        fetchAllExpenses({ id, category_id: selectedCategoryExpense?.id })
+        fetchAllExpenses({
+          planId,
+          bucketId,
+          category_id: docId(selectedCategoryExpense),
+        })
       );
     }
-  }, [selectedCategoryExpense, dispatch, id]);
+  }, [selectedCategoryExpense, dispatch, planId, bucketId]);
   useEffect(() => {
     if (editingExpense) {
       setValue('name', editingExpense?.name);
@@ -77,18 +82,23 @@ const AddExpense = ({
     try {
       setIsLoading(true);
       const submitData = {
+        planId,
+        bucketId,
         name: data.name,
         amount: data?.amount,
         date: data?.date,
-        id,
-        category_id: selectedCategoryExpense?.id,
-        ...(editingExpense && { expense_id: editingExpense?.id }),
+        category_id: docId(selectedCategoryExpense),
+        ...(editingExpense && { expense_id: docId(editingExpense) }),
       };
       const updateExpense = editingExpense ? editExpense : createExpense;
       await dispatch(updateExpense(submitData)).unwrap();
 
       await dispatch(
-        fetchAllExpenses({ id, category_id: selectedCategoryExpense?.id })
+        fetchAllExpenses({
+          planId,
+          bucketId,
+          category_id: docId(selectedCategoryExpense),
+        })
       ).unwrap();
       setIsLoading(false);
       reset({
@@ -98,9 +108,9 @@ const AddExpense = ({
       });
       setEditingExpense(null);
 
-      await dispatch(fetchSingleBudget(id)).unwrap();
-      await dispatch(fetchAllCategories(id)).unwrap();
-      await dispatch(fetchRecentExpenses(id)).unwrap();
+      await dispatch(fetchSingleBudget(planId)).unwrap();
+      await dispatch(fetchAllCategories({ planId, bucketId })).unwrap();
+      await dispatch(fetchRecentExpenses(planId)).unwrap();
     } catch (err) {
       setIsLoading(false);
       showErrorMessage(err.message || 'Failed to add expense');
@@ -118,18 +128,23 @@ const AddExpense = ({
       );
       await dispatch(
         deleteExpense({
-          id,
-          category_id: selectedCategoryExpense?.id,
+          planId,
+          bucketId,
+          category_id: docId(selectedCategoryExpense),
           expense_id,
         })
       ).unwrap();
 
       await dispatch(
-        fetchAllExpenses({ id, category_id: selectedCategoryExpense?.id })
+        fetchAllExpenses({
+          planId,
+          bucketId,
+          category_id: docId(selectedCategoryExpense),
+        })
       ).unwrap();
-      await dispatch(fetchAllCategories(id)).unwrap();
-      await dispatch(fetchSingleBudget(id)).unwrap();
-      await dispatch(fetchRecentExpenses(id)).unwrap();
+      await dispatch(fetchAllCategories({ planId, bucketId })).unwrap();
+      await dispatch(fetchSingleBudget(planId)).unwrap();
+      await dispatch(fetchRecentExpenses(planId)).unwrap();
       setEditingExpense(null);
       setDeletingExpense((prev) => ({
         ...prev,
@@ -165,7 +180,7 @@ const AddExpense = ({
             <ul className='space-y-3'>
               {expenses?.map((expense) => (
                 <li
-                  key={expense.id}
+                  key={docId(expense)}
                   className='flex flex-col bg-white p-3 rounded-lg shadow-sm border border-gray-200'
                 >
                   <div className='flex justify-between items-center flex-wrap'>
@@ -190,25 +205,25 @@ const AddExpense = ({
                         size='icon'
                         onClick={() => handleEditExpense(expense)}
                         className='text-gray-500 hover:text-blue-600'
-                        disabled={deletingExpense[expense.id]?.isDeleting}
+                        disabled={deletingExpense[docId(expense)]?.isDeleting}
                       >
                         <Edit className='h-4 w-4' />
                       </Button>
                       <Button
                         variant='ghost'
                         size='icon'
-                        onClick={() => handleDeleteExpense(expense.id)}
+                        onClick={() => handleDeleteExpense(docId(expense))}
                         className='text-gray-500 hover:text-red-600'
-                        disabled={deletingExpense[expense.id]?.isDeleting}
+                        disabled={deletingExpense[docId(expense)]?.isDeleting}
                       >
                         <Trash2 className='h-4 w-4' />
                       </Button>
                     </div>
                   </div>
-                  {deletingExpense[expense.id]?.isDeleting && (
+                  {deletingExpense[docId(expense)]?.isDeleting && (
                     <div className='mt-2'>
                       <Progress
-                        value={deletingExpense[expense.id]?.progress}
+                        value={deletingExpense[docId(expense)]?.progress}
                         className='w-full h-1'
                       />
                     </div>

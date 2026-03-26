@@ -33,7 +33,7 @@ const AddNewCategory = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { planId, bucketId } = useParams();
   const {
     formState: { errors },
     register,
@@ -62,11 +62,13 @@ const AddNewCategory = ({
     try {
       setLoading(true);
       const submitData = {
+        planId,
+        bucketId,
         name: data.name,
         amount: data.amount,
-
-        id,
-        ...(editingCategory && { category_id: editingCategory?._id }),
+        ...(editingCategory && {
+          category_id: editingCategory?._id ?? editingCategory?.id,
+        }),
       };
       const updateCategory = editingCategory ? editCategory : createCategory;
       await dispatch(updateCategory(submitData)).unwrap();
@@ -75,8 +77,8 @@ const AddNewCategory = ({
       showToastMessage(
         editingCategory ? 'Category updated' : 'Category created successfully'
       );
-      await dispatch(fetchAllCategories(id)).unwrap();
-      await dispatch(fetchSingleBudget(id)).unwrap();
+      await dispatch(fetchAllCategories({ planId, bucketId })).unwrap();
+      await dispatch(fetchSingleBudget(planId)).unwrap();
       if (editingCategory) {
         setEditingCategory(null);
       }

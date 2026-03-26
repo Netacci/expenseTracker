@@ -11,11 +11,11 @@ const initialState = {
 export const createIncome = createAsyncThunk(
   'income/create',
   async (data, thunkAPI) => {
-    const { id } = data;
+    const { planId, ...body } = data;
     try {
       const response = await userRequest.post(
-        `budgets/${id}/income/create`,
-        data
+        `monthly-plans/${planId}/incomes/create`,
+        body
       );
 
       return response.data.data;
@@ -26,9 +26,11 @@ export const createIncome = createAsyncThunk(
 );
 export const fetchAllIncomes = createAsyncThunk(
   'income/fetch-all-incomes',
-  async (id, thunkAPI) => {
+  async (planId, thunkAPI) => {
     try {
-      const response = await userRequest.get(`budgets/${id}/incomes`);
+      const response = await userRequest.get(
+        `monthly-plans/${planId}/incomes`
+      );
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -38,11 +40,11 @@ export const fetchAllIncomes = createAsyncThunk(
 export const editIncome = createAsyncThunk(
   'income/edit-income',
   async (data, thunkAPI) => {
-    const { id, income_id } = data;
+    const { planId, income_id, ...body } = data;
     try {
       const response = await userRequest.put(
-        `budgets/${id}/incomes/${income_id}`,
-        data
+        `monthly-plans/${planId}/incomes/${income_id}`,
+        body
       );
       return response.data.data;
     } catch (error) {
@@ -53,10 +55,10 @@ export const editIncome = createAsyncThunk(
 
 export const deleteIncome = createAsyncThunk(
   'income/delete-income',
-  async ({ id, income_id }, thunkAPI) => {
+  async ({ planId, income_id }, thunkAPI) => {
     try {
       const response = await userRequest.delete(
-        `budgets/${id}/incomes/${income_id}`
+        `monthly-plans/${planId}/incomes/${income_id}`
       );
       return response.data.data;
     } catch (error) {

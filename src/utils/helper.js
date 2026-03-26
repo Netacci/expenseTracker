@@ -37,6 +37,12 @@ export const currencySymbol = (currency) => {
   }
 };
 
+export const formatAmount = (amount, fractionDigits = 2) =>
+  Intl.NumberFormat('en-US', {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(Number(amount || 0));
+
 export const startProgressInterval = (
   id,
   setDeleting,

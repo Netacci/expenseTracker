@@ -33,7 +33,7 @@ const AddNewIncome = ({
   setEditingIncome,
 }) => {
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { planId } = useParams();
   const [loading, setLoading] = useState(false);
 
   const {
@@ -65,11 +65,13 @@ const AddNewIncome = ({
     try {
       setLoading(true);
       const submitData = {
+        planId,
         name: data.name,
         amount: data.amount,
         date: data.date,
-        id,
-        ...(editingIncome && { income_id: editingIncome?.id }),
+        ...(editingIncome && {
+          income_id: editingIncome?._id ?? editingIncome?.id,
+        }),
       };
       const updateIncome = editingIncome ? editIncome : createIncome;
       await dispatch(updateIncome(submitData)).unwrap();
@@ -80,8 +82,8 @@ const AddNewIncome = ({
           ? 'Income updated successfully'
           : 'Income added successfully'
       );
-      await dispatch(fetchAllIncomes(id)).unwrap();
-      await dispatch(fetchSingleBudget(id)).unwrap();
+      await dispatch(fetchAllIncomes(planId)).unwrap();
+      await dispatch(fetchSingleBudget(planId)).unwrap();
       if (editingIncome) {
         setEditingIncome(null);
       }
@@ -127,6 +129,7 @@ const AddNewIncome = ({
             <Input
               id='amount'
               type='number'
+              step='0.01'
               {...register('amount', {
                 required: 'Amount is required',
                 min: { value: 0, message: 'Amount must be positive' },
